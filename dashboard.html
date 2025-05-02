@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CryptoLedger - Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3a7bd5;
+            --secondary-color: #00d2ff;
+            --dark-color: #333;
+            --light-color: #f4f4f4;
+            --danger-color: #dc3545;
+            --success-color: #28a745;
+            --gray-color: #f0f2f5;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            background-color: var(--gray-color);
+            color: var(--dark-color);
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        nav {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .nav-menu {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-item {
+            margin-left: 20px;
+        }
+        
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            transition: 0.3s opacity;
+        }
+        
+        .nav-link:hover {
+            opacity: 0.8;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: white;
+            color: var(--primary-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        main {
+            padding: 2rem 0;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 20px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--dark-color);
+        }
+        
+        .balance-section {
+            grid-column: span 4;
+        }
+        
+        .balance-card {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .balance-title {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+        
+        .balance-amount {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .balance-id {
+            font-size: 0.9rem;
+            word-break: break-all;
+            opacity: 0.8;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 8px;
+            border-radius: 5px;
+        }
+        
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: white;
+            color: var(--primary-color);
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .transactions-section {
+            grid-column: span 8;
+        }
+        
+        .filter-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .search-box {
+            display: flex;
+            align-items: center;
+            background-color: var(--gray-color);
+            border-radius: 5px;
+            padding: 5px 10px;
+        }
+        
+        .search-box input {
+            border: none;
+            background-color: transparent;
+            margin-left: 5px;
+            padding: 5px;
+            font-size: 0.9rem;
+            width: 200px;
+        }
+        
+        .filter-dropdown {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: white;
+            font-size: 0.9rem;
+        }
+        
+        .transactions-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .transaction-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .transaction-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--gray-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            color: var(--primary-color);
+        }
+        
+        .transaction-details h4 {
+            font-size: 1rem;
+            margin-bottom: 3px;
+        }
+        
+        .transaction-details p {
+            font-size: 0.85rem;
+            color: #777;
+        }
+        
+        .transaction-amount {
+            font-weight: bold;
+        }
+        
+        .credit {
+            color: var(--success-color);
+        }
+        
+        .debit {
+            color: var(--danger-color);
+        }
+        
+        .transaction-date {
+            font-size: 0.85rem;
+            color: #777;
+            text-align: right;
+        }
+        
+        .triple-entry-section {
+            grid-column: span 12;
+            margin-top: 20px;
+        }
+        
+        .ledger-nav {
+            display: flex;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .ledger-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .ledger-tab.active {
+            border-bottom: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+        
+        .block-info {
+            display: flex;
+            justify-content: space-between;
+            background-color: var(--gray-color);
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        
+        .block-detail {
+            text-align: center;
+        }
+        
+        .block-detail h4 {
+            font-size: 0.9rem;
+            color: #777;
+            margin-bottom: 5px;
+        }
+        
+        .block-detail p {
+            font-weight: bold;
+        }
+        
+        .triple-entry-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .triple-entry-table th, .triple-entry-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .triple-entry-table th {
+            background-color: var(--gray-color);
+            font-weight: normal;
+            color: #777;
+        }
+        
+        .hash-value {
+            font-family: monospace;
+            font-size: 0.85rem;
+            background-color: var(--gray-color);
+            padding: 5px;
+            border-radius: 3px;
+            word-break: break-all;
+        }
+        
+        @media (max-width: 992px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .balance-section, .transactions-section, .triple-entry-section {
+                grid-column: span 1;
+            }
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: black;
+        }
+        
+        .modal-header {
+            margin-bottom: 20px;
+        }
+        
+        .modal-header h2 {
+            margin: 0;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .submit-btn:hover {
+            opacity: 0.9;
+        }
+
+        .user-profile {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end; /* Align items to the right */
+        gap: 10px; /* Add spacing between elements */
+    }
+
+    .logout-btn {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.2rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .logout-btn:hover {
+        opacity: 0.8;
+    }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container navbar">
+            <div class="logo">CryptoLedger</div>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="dashboard.html" class="nav-link active">Home</a></li>
+                <li class="nav-item"><a href="Transacciones.html" class="nav-link">Transacciones</a></li>
+                <li class="nav-item"><a href="Recibir.html" class="nav-link">Recibir</a></li>
+                <li class="nav-item"><a href="Transacciones.html" class="nav-link">Depositar</a></li>
+            </ul>
+            </ul>
+            <div class="user-profile">
+                <div id="user-avatar" class="user-avatar">U</div>
+                <span id="user-name">Usuario</span>
+                <button class="logout-btn" onclick="logout()" title="Cerrar Sesión">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <script>
+        function logout() {
+            // Clear localStorage and redirect to login page
+            localStorage.clear();
+            window.location.href = 'login.html';
+        }
+    </script>
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const email = localStorage.getItem('email') || 'Usuario';
+        const initial = email.charAt(0).toUpperCase();
+
+        // Display user name and avatar
+        document.getElementById('user-name').textContent = email;
+        document.getElementById('user-avatar').textContent = initial;
+
+        // Hash the email using SHA-256
+        const hashedEmail = CryptoJS.SHA256(email).toString(CryptoJS.enc.Hex);
+
+        // Replace the hardcoded address with the hashed email
+        document.querySelector('.balance-id').textContent = hashedEmail;
+    });
+</script>
+    
+    <main>
+        <div class="container">
+            <div class="dashboard-grid">
+                <!-- Balance Section -->
+                <section class="balance-section">
+                    <div class="balance-card">
+                        <div class="balance-title">Tu Balance</div>
+                        <div class="balance-amount">$00.00</div>
+                        <div class="balance-id"></div>
+                        <div class="quick-actions">
+                            <button class="btn" id="transferBtn"><i class="fas fa-exchange-alt"></i> Transferir</button>
+                            <button class="btn" id="recibirbtn"><i class="fas fa-qrcode"></i> Recibir</button>
+
+                            <script>
+                                document.getElementById('transferBtn').addEventListener('click', function () {
+                                    window.location.href = 'Transacciones.html';
+                                });
+                                document.getElementById('recibirbtn').addEventListener('click', function () {
+                                    window.location.href = 'Recibir.html';
+                                });
+                            </script>                            
+                            
+                        
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Resumen de Actividad</div>
+                        </div>
+                        <div>
+                            <div style="margin-bottom: 15px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                    <span>Ingresos del Mes</span>
+                                    <span class="credit">+ $5,600.00</span>
+                                </div>
+                                <div style="height: 5px; background-color: #f0f2f5; border-radius: 5px;">
+                                    <div style="height: 100%; width: 75%; background-color: #28a745; border-radius: 5px;"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                                    <span>Gastos del Mes</span>
+                                    <span class="debit">- $3,200.00</span>
+                                </div>
+                                <div style="height: 5px; background-color: #f0f2f5; border-radius: 5px;">
+                                    <div style="height: 100%; width: 40%; background-color: #dc3545; border-radius: 5px;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Transactions Section -->
+                <section class="transactions-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Últimas Transacciones</div>
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" placeholder="Buscar transacciones...">
+                            </div>
+                        </div>
+                        <div class="filter-bar">
+                            <select class="filter-dropdown">
+                                <option value="all">Todas las transacciones</option>
+                                <option value="incoming">Entrantes</option>
+                                <option value="outgoing">Salientes</option>
+                            </select>
+                            <select class="filter-dropdown">
+                                <option value="30">Últimos 30 días</option>
+                                <option value="90">Últimos 90 días</option>
+                                <option value="180">Últimos 6 meses</option>
+                                <option value="365">Último año</option>
+                            </select>
+                        </div>
+                        <div class="transactions-list">
+                            <!-- Transaction 1 -->
+                            <div class="transaction-item">
+                                <div class="transaction-info">
+                                    <div class="transaction-icon">
+                                        <i class="fas fa-arrow-down"></i>
+                                    </div>
+                                    <div class="transaction-details">
+                                        <h4>Depósito Recibido</h4>
+                                        <p>De: 0x742...a8f3</p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="transaction-amount credit">+ $2,500.00</div>
+                                    <div class="transaction-date">Hoy, 14:25</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Transaction 2 -->
+                            <div class="transaction-item">
+                                <div class="transaction-info">
+                                    <div class="transaction-icon">
+                                        <i class="fas fa-arrow-up"></i>
+                                    </div>
+                                    <div class="transaction-details">
+                                        <h4>Pago Realizado</h4>
+                                        <p>A: 0x935...b7e1</p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="transaction-amount debit">- $780.50</div>
+                                    <div class="transaction-date">Ayer, 09:15</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Transaction 3 -->
+                            <div class="transaction-item">
+                                <div class="transaction-info">
+                                    <div class="transaction-icon">
+                                        <i class="fas fa-arrow-down"></i>
+                                    </div>
+                                    <div class="transaction-details">
+                                        <h4>Pago Recibido</h4>
+                                        <p>De: 0x512...c4d2</p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="transaction-amount credit">+ $1,250.00</div>
+                                    <div class="transaction-date">03 Abr, 16:40</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Transaction 4 -->
+                            <div class="transaction-item">
+                                <div class="transaction-info">
+                                    <div class="transaction-icon">
+                                        <i class="fas fa-arrow-up"></i>
+                                    </div>
+                                    <div class="transaction-details">
+                                        <h4>Transferencia</h4>
+                                        <p>A: 0x371...e9a5</p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="transaction-amount debit">- $320.75</div>
+                                    <div class="transaction-date">01 Abr, 11:30</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Transaction 5 -->
+                            <div class="transaction-item">
+                                <div class="transaction-info">
+                                    <div class="transaction-icon">
+                                        <i class="fas fa-arrow-down"></i>
+                                    </div>
+                                    <div class="transaction-details">
+                                        <h4>Depósito Inicial</h4>
+                                        <p>De: 0x492...f7b6</p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="transaction-amount credit">+ $5,000.00</div>
+                                    <div class="transaction-date">28 Mar, 09:05</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                

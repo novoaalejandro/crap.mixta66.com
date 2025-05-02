@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CryptoLedger - Recibir Transacciones</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3a7bd5;
+            --secondary-color: #00d2ff;
+            --dark-color: #333;
+            --light-color: #f4f4f4;
+            --danger-color: #dc3545;
+            --success-color: #28a745;
+            --gray-color: #f0f2f5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            background-color: var(--gray-color);
+            color: var(--dark-color);
+        }
+
+        nav {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-left: 20px;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            transition: 0.3s opacity;
+        }
+
+        .nav-link:hover {
+            opacity: 0.8;
+        }
+
+        .nav-link.active {
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: white;
+            color: var(--primary-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: 20px auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+        }
+
+        .wallet-info {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .wallet-address {
+            font-family: monospace;
+            background-color: var(--gray-color);
+            padding: 10px;
+            border-radius: 5px;
+            word-break: break-all;
+            margin-bottom: 10px;
+        }
+
+        .qr-code {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .transactions-list {
+            margin-top: 20px;
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .transaction-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .transaction-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--gray-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            color: var(--primary-color);
+        }
+
+        .transaction-details h4 {
+            font-size: 1rem;
+            margin-bottom: 3px;
+        }
+
+        .transaction-details p {
+            font-size: 0.85rem;
+            color: #777;
+        }
+
+        .transaction-amount {
+            font-weight: bold;
+            color: var(--success-color);
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-content h2 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .modal-content p {
+            font-size: 1rem;
+            color: var(--dark-color);
+        }
+
+        .close {
+            color: var(--danger-color);
+            float: right;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: var(--dark-color);
+            text-decoration: none;
+        }
+
+        .user-profile {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end; /* Align items to the right */
+        gap: 10px; /* Add spacing between elements */
+    }
+
+    .logout-btn {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.2rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .logout-btn:hover {
+        opacity: 0.8;
+    }
+        
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="navbar">
+            <div class="logo">CryptoLedger</div>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="dashboard.html" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="Transacciones.html" class="nav-link">Transacciones</a></li>
+                <li class="nav-item"><a href="Recibir.html" class="nav-link">Recibir</a></li>
+                <li class="nav-item"><a href="Transacciones.html" class="nav-link">Depositar</a></li>
+            </ul>
+               
+                
+            </ul>
+            <div class="user-profile">
+                <div id="user-avatar" class="user-avatar">U</div>
+                <span id="user-name">Usuario</span>
+                <button class="logout-btn" onclick="logout()" title="Cerrar Sesión">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <script>
+        function logout() {
+            // Clear localStorage and redirect to login page
+            localStorage.clear();
+            window.location.href = 'login.html';
+        }
+    </script>
+
+    <div class="container">
+        <div class="header">
+            <h1>Recibir Transacciones</h1>
+        </div>
+        <div class="wallet-info">
+            <p>Comparte tu dirección para recibir fondos:</p>
+            <div class="wallet-address"></div>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const email = localStorage.getItem('email') || 'Usuario';
+        const initial = email.charAt(0).toUpperCase();
+
+        // Display user name and avatar
+        document.getElementById('user-name').textContent = email;
+        document.getElementById('user-avatar').textContent = initial;
+
+        // Hash the email using SHA-256
+        const hashedEmail = CryptoJS.SHA256(email).toString(CryptoJS.enc.Hex);
+
+        // Replace the hardcoded address with the hashed email
+        document.querySelector('.wallet-address').textContent = hashedEmail;
+    });
+</script>
+            <button class="btn" onclick="copyAddress()">Copiar Dirección</button>
+        </div>
+        <div class="qr-code">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=0x8F3E45a76c5e7d432F9eEd1593C6c38c13337e04" alt="QR Code">
+        </div>
+        <div class="transactions-list">
+            <h2>Últimas Transacciones Recibidas</h2>
+            <div class="transaction-item">
+                <div class="transaction-info">
+                    <div class="transaction-icon"><i class="fas fa-arrow-down"></i></div>
+                    <div class="transaction-details">
+                        <h4>Pago Recibido</h4>
+                        <p>Desde: 0xABC123...</p>
+                    </div>
+                </div>
+                <div class="transaction-amount">+$500.00</div>
+            </div>
+            <div class="transaction-item">
+                <div class="transaction-info">
+                    <div class="transaction-icon"><i class="fas fa-arrow-down"></i></div>
+                    <div class="transaction-details">
+                        <h4>Pago Recibido</h4>
+                        <p>Desde: 0xDEF456...</p>
+                    </div>
+                </div>
+                <div class="transaction-amount">+$1,200.00</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for alerts -->
+    <div id="alert-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="alert-title"></h2>
+            <p id="alert-message"></p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const name = localStorage.getItem('email') || 'Usuario';
+            const inicial = name.charAt(0).toUpperCase();
+
+            document.getElementById('user-name').textContent = name;
+            document.getElementById('user-avatar').textContent = inicial;
+        });
+
+        function showAlert(message, type) {
+            const modal = document.getElementById('alert-modal');
+            const title = document.getElementById('alert-title');
+            const alertMessage = document.getElementById('alert-message');
+
+            if (type === 'success') {
+                title.textContent = 'Éxito';
+                title.style.color = 'var(--success-color)';
+            } else {
+                title.textContent = 'Error';
+                title.style.color = 'var(--danger-color)';
+            }
+
+            alertMessage.textContent = message;
+            modal.style.display = 'block';
+
+            document.querySelector('.close').onclick = () => modal.style.display = 'none';
+            window.onclick = event => {
+                if (event.target === modal) modal.style.display = 'none';
+            };
+        }
+
+        function copyAddress() {
+            const address = document.querySelector('.wallet-address').textContent;
+            navigator.clipboard.writeText(address).then(() => {
+                showAlert('Dirección copiada al portapapeles', 'success');
+            }).catch(() => {
+                showAlert('Error al copiar la dirección', 'danger');
+            });
+        }
+    </script>
+</body>
+</html>

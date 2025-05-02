@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CryptoLedger - Triple Entry Accounting</title>
+    <style>
+        :root {
+            --primary-color: #3a7bd5;
+            --secondary-color: #00d2ff;
+            --dark-color: #333;
+            --light-color: #f4f4f4;
+            --danger-color: #dc3545;
+            --success-color: #28a745;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(120deg, var(--primary-color), var(--secondary-color));
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .auth-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+        }
+
+        .auth-info {
+            flex: 1;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .auth-info h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .auth-info p {
+            margin-bottom: 20px;
+            font-size: 1rem;
+        }
+
+        .auth-form {
+            flex: 1;
+            padding: 40px;
+            background-color: white;
+        }
+
+        .tab-header {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: none;
+            font-size: 1rem;
+            cursor: pointer;
+            position: relative;
+            color: var(--dark-color);
+            opacity: 0.7;
+        }
+
+        .tab-btn.active {
+            opacity: 1;
+            font-weight: bold;
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: var(--dark-color);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+            transition: opacity 0.3s;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .form-footer {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .form-footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .form-content {
+            display: none;
+        }
+
+        .form-content.active {
+            display: block;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-content h2 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .modal-content p {
+            font-size: 1rem;
+            color: var(--dark-color);
+        }
+
+        .close {
+            color: var(--danger-color);
+            float: right;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: var(--dark-color);
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .auth-container {
+                flex-direction: column;
+            }
+
+            .auth-info {
+                padding: 20px;
+            }
+
+            .auth-form {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="auth-container">
+            <div class="auth-info">
+                <h1>CryptoLedger</h1>
+                <p>Sistema de contabilidad de triple entrada basado en tecnología blockchain.</p>
+                <p>Realiza transacciones seguras y transparentes con nuestro innovador sistema de contabilidad distribuida.</p>
+            </div>
+            <div class="auth-form">
+                <div class="tab-header">
+                    <button class="tab-btn active" onclick="showTab('login')">Iniciar Sesión</button>
+                    <button class="tab-btn" onclick="showTab('register')">Crear Cuenta</button>
+                </div>
+
+                <div id="login" class="form-content active">
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label for="login-email">Correo Electrónico</label>
+                            <input type="email" id="login-email" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">Contraseña</label>
+                            <input type="password" id="login-password" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn">Iniciar Sesión</button>
+                        <div class="form-footer">
+                            <a href="#">¿Olvidaste tu contraseña?</a>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="register" class="form-content">
+                    <form id="register-form">
+                        <div class="form-group">
+                            <label for="register-name">Nombre Completo</label>
+                            <input type="text" id="register-name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-email">Correo Electrónico</label>
+                            <input type="email" id="register-email" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-password">Contraseña</label>
+                            <input type="password" id="register-password" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-confirm-password">Confirmar Contraseña</label>
+                            <input type="password" id="register-confirm-password" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn">Crear Cuenta</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for alerts -->
+    <div id="alert-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="alert-title"></h2>
+            <p id="alert-message"></p>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabId) {
+            document.querySelectorAll('.form-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            document.querySelector(`.tab-btn[onclick="showTab('${tabId}')"]`).classList.add('active');
+        }
+
+        function showAlert(message, type) {
+            const modal = document.getElementById('alert-modal');
+            const title = document.getElementById('alert-title');
+            const alertMessage = document.getElementById('alert-message');
+
+            if (type === 'success') {
+                title.textContent = 'Éxito';
+                title.style.color = 'var(--success-color)';
+            } else {
+                title.textContent = 'Error';
+                title.style.color = 'var(--danger-color)';
+            }
+
+            alertMessage.textContent = message;
+            modal.style.display = 'block';
+
+            document.querySelector('.close').onclick = () => modal.style.display = 'none';
+            window.onclick = event => {
+                if (event.target === modal) modal.style.display = 'none';
+            };
+        }
+
+        document.getElementById('login-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            fetch('https://cabo9yx4ac.execute-api.us-east-1.amazonaws.com/dev/loginUser', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        localStorage.setItem('email', email);
+                        showAlert('Inicio de sesión exitoso', 'success');
+                        setTimeout(() => window.location.href = 'dashboard.html', 2000);
+                    } else {
+                        showAlert(data.message || 'Correo o contraseña incorrectos', 'danger');
+                    }
+                })
+                .catch(() => showAlert('Ocurrió un error al intentar iniciar sesión', 'danger'));
+        });
+
+        document.getElementById('register-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm-password').value;
+
+            if (password !== confirmPassword) {
+                showAlert('Las contraseñas no coinciden', 'danger');
+                return;
+            }
+
+            fetch('https://cabo9yx4ac.execute-api.us-east-1.amazonaws.com/dev/RegisterUser', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, password })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(errorData => {
+                            throw new Error(errorData.error || 'Hubo un error al registrar el usuario');
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => showAlert(data.message || 'Registro exitoso', 'success'))
+                .catch(error => {
+                    if (error.message.includes('El usuario ya existe')) {
+                        showAlert('El correo electrónico ingresado ya está vinculado a una cuenta.', 'danger');
+                    } else {
+                        showAlert('Hubo un problema al registrar el usuario. Intenta nuevamente.', 'danger');
+                    }
+                });
+        });
+    </script>
+</body>
+
+</html>
