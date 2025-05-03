@@ -221,6 +221,7 @@
             background-color: var(--danger-color);
             border-radius: 5px;
         }
+
         
         .user-profile {
         display: flex;
@@ -246,36 +247,33 @@
 
     
     .search-bar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
         margin-top: 10px;
     }
 
-    .search-container {
-        display: flex;
-        align-items: center;
-        background-color: #f0f2f5;
-        border-radius: 5px;
-        padding: 8px 12px;
-        border: 1px solid #ddd;
-    }
-
-    .search-icon {
-        color: #888;
-        margin-right: 8px;
-        font-size: 1rem;
-    }
-
-    .search-container input {
-        border: none;
-        outline: none;
-        background: transparent;
-        font-size: 1rem;
+    .search-bar input {
         flex: 1;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 1rem;
     }
 
-    .search-container input::placeholder {
-        color: #aaa;
+    .search-bar button {
+        padding: 8px 15px;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
     }
 
+    .search-bar button:hover {
+        background-color: var(--secondary-color);
+    }
 </style>
     </style>
 </head>
@@ -343,11 +341,10 @@
                         <div class="card-header">
                             <div class="card-title">Últimas Transacciones</div>
                             <div class="search-bar">
-                                <div class="search-container">
-                                    <i class="fas fa-search search-icon"></i>
-                                    <input type="text" id="search-input" class="form-control" placeholder="Buscar transacción...">
-                                </div>
+                                <input type="text" id="search-input" class="form-control" placeholder="Buscar transacciones...">
+                                <button class="btn" id="search-btn"><i class="fas fa-search"></i></button>
                             </div>
+                        </div>
                         <div class="transactions-list"></div>
                     </div>
                 </section>
@@ -371,18 +368,19 @@
                         headers: { 'Content-Type': 'application/json' }
                     })
                 ]);
-
+    
                 if (!resEnviadas.ok || !resRecibidas.ok) {
                     console.error("Error en una de las respuestas:", resEnviadas.status, resRecibidas.status);
                     return;
                 }
-
+    
                 const dataEnviadas = await resEnviadas.json();
                 const dataRecibidas = await resRecibidas.json();
-
+    
                 const enviadas = Array.isArray(dataEnviadas) ? dataEnviadas : dataEnviadas.body || [];
                 const recibidas = Array.isArray(dataRecibidas) ? dataRecibidas : dataRecibidas.body || [];
-
+    
+                // Fusionar y eliminar duplicados
                 const todas = [...enviadas, ...recibidas];
                 const idsVistos = new Set();
                 const transaccionesUnicas = todas.filter(tx => {
@@ -390,13 +388,14 @@
                     idsVistos.add(tx.transaction_id);
                     return true;
                 });
-
+    
+                // Update Transactions List
                 const container = document.querySelector(".transactions-list");
                 container.innerHTML = "";
-
+    
                 let totalIngresos = 0;
                 let totalGastos = 0;
-
+    
                 transaccionesUnicas.forEach(tx => {
                     const esRemitente = tx.remitente === email;
                     const titulo = esRemitente ? "Pago Enviado" : "Pago Recibido";
@@ -405,13 +404,14 @@
                     const icono = esRemitente ? "fa-arrow-up" : "fa-arrow-down";
                     const monto = parseFloat(tx.monto);
                     const clase = esRemitente ? 'debit' : 'credit';
-
+    
+                    // Update totals
                     if (esRemitente) {
                         totalGastos += monto;
                     } else {
                         totalIngresos += monto;
                     }
-
+    
                     container.innerHTML += `
                         <div class="transaction-item">
                             <div class="transaction-info">
@@ -431,23 +431,30 @@
                         </div>
                     `;
                 });
-
-                const balance = totalIngresos - totalGastos;
+    
+                // Calculate balance and ensure it doesn't go below 0
+                let balance = totalIngresos - totalGastos;
+                if (balance < 0) {
+                    balance = 0; // Set balance to 0 if it's negative
+                }
+    
+                // Update the UI
                 document.querySelector('.balance-amount').textContent = `$${balance.toLocaleString()}`;
                 document.querySelector('.credit').textContent = `+ $${totalIngresos.toLocaleString()}`;
                 document.querySelector('.debit').textContent = `- $${totalGastos.toLocaleString()}`;
-
+    
+                // Update progress bars
                 const ingresosBar = document.querySelector('.credit-bar');
                 const gastosBar = document.querySelector('.debit-bar');
                 const total = totalIngresos + totalGastos;
                 ingresosBar.style.width = total > 0 ? `${(totalIngresos / total) * 100}%` : '0%';
                 gastosBar.style.width = total > 0 ? `${(totalGastos / total) * 100}%` : '0%';
-
+    
             } catch (err) {
                 console.error("Error al cargar transacciones:", err);
             }
         }
-
+    
         document.addEventListener('DOMContentLoaded', function () {
             const email = localStorage.getItem('email') || 'usuario@correo.com';
             const hashedEmail = CryptoJS.SHA256(email).toString(CryptoJS.enc.Hex);
@@ -456,11 +463,6 @@
             document.querySelector('.balance-id').textContent = hashedEmail;
             cargarTransaccionesCompletas(email, hashedEmail);
         });
-
-        function logout() {
-            localStorage.clear();
-            window.location.href = 'index.html';
-        }
     </script>
 </body>
 </html>
