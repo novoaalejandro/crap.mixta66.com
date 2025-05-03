@@ -15,69 +15,69 @@
             --success-color: #28a745;
             --gray-color: #f0f2f5;
         }
-        
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
-        
+
         body {
             font-family: 'Arial', sans-serif;
             line-height: 1.6;
             background-color: var(--gray-color);
             color: var(--dark-color);
         }
-        
+
         .container {
             width: 100%;
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 15px;
         }
-        
+
         nav {
             background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
             color: white;
             padding: 1rem 0;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
-        
+
         .navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        
+
         .logo {
             font-size: 1.5rem;
             font-weight: bold;
         }
-        
+
         .nav-menu {
             display: flex;
             list-style: none;
         }
-        
+
         .nav-item {
             margin-left: 20px;
         }
-        
+
         .nav-link {
             color: white;
             text-decoration: none;
             transition: 0.3s opacity;
         }
-        
+
         .nav-link:hover {
             opacity: 0.8;
         }
-        
+
         .user-profile {
             display: flex;
             align-items: center;
         }
-        
+
         .user-avatar {
             width: 32px;
             height: 32px;
@@ -90,17 +90,17 @@
             margin-right: 10px;
             font-weight: bold;
         }
-        
+
         main {
             padding: 2rem 0;
         }
-        
+
         .dashboard-grid {
             display: grid;
             grid-template-columns: repeat(12, 1fr);
             gap: 20px;
         }
-        
+
         .card {
             background-color: white;
             border-radius: 10px;
@@ -108,24 +108,11 @@
             padding: 20px;
             margin-bottom: 20px;
         }
-        
-        .card-header {
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .card-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: var(--dark-color);
-        }
-        
+
         .balance-section {
             grid-column: span 4;
         }
-        
+
         .balance-card {
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: white;
@@ -133,19 +120,19 @@
             border-radius: 10px;
             margin-bottom: 20px;
         }
-        
+
         .balance-title {
             font-size: 1rem;
             opacity: 0.9;
             margin-bottom: 10px;
         }
-        
+
         .balance-amount {
             font-size: 2rem;
             font-weight: bold;
             margin-bottom: 15px;
         }
-        
+
         .balance-id {
             font-size: 0.9rem;
             word-break: break-all;
@@ -154,13 +141,13 @@
             padding: 8px;
             border-radius: 5px;
         }
-        
+
         .quick-actions {
             display: flex;
             gap: 10px;
             margin-top: 15px;
         }
-        
+
         .btn {
             display: inline-block;
             background-color: white;
@@ -172,52 +159,20 @@
             font-size: 0.9rem;
             transition: background-color 0.3s;
         }
-        
+
         .btn:hover {
             background-color: rgba(255, 255, 255, 0.9);
         }
-        
+
         .transactions-section {
             grid-column: span 8;
         }
-        
-        .filter-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        
-        .search-box {
-            display: flex;
-            align-items: center;
-            background-color: var(--gray-color);
-            border-radius: 5px;
-            padding: 5px 10px;
-        }
-        
-        .search-box input {
-            border: none;
-            background-color: transparent;
-            margin-left: 5px;
-            padding: 5px;
-            font-size: 0.9rem;
-            width: 200px;
-        }
-        
-        .filter-dropdown {
-            padding: 5px 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: white;
-            font-size: 0.9rem;
-        }
-        
+
         .transactions-list {
             max-height: 500px;
             overflow-y: auto;
         }
-        
+
         .transaction-item {
             display: flex;
             justify-content: space-between;
@@ -225,12 +180,12 @@
             padding: 15px 0;
             border-bottom: 1px solid #eee;
         }
-        
+
         .transaction-info {
             display: flex;
             align-items: center;
         }
-        
+
         .transaction-icon {
             width: 40px;
             height: 40px;
@@ -242,215 +197,30 @@
             margin-right: 15px;
             color: var(--primary-color);
         }
-        
-        .transaction-details h4 {
-            font-size: 1rem;
-            margin-bottom: 3px;
-        }
-        
-        .transaction-details p {
-            font-size: 0.85rem;
-            color: #777;
-        }
-        
+
         .transaction-amount {
             font-weight: bold;
         }
-        
+
         .credit {
             color: var(--success-color);
         }
-        
+
         .debit {
             color: var(--danger-color);
         }
-        
-        .transaction-date {
-            font-size: 0.85rem;
-            color: #777;
-            text-align: right;
-        }
-        
-        .triple-entry-section {
-            grid-column: span 12;
-            margin-top: 20px;
-        }
-        
-        .ledger-nav {
-            display: flex;
-            margin-bottom: 15px;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .ledger-tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            transition: all 0.3s;
-        }
-        
-        .ledger-tab.active {
-            border-bottom: 2px solid var(--primary-color);
-            color: var(--primary-color);
-            font-weight: bold;
-        }
-        
-        .block-info {
-            display: flex;
-            justify-content: space-between;
-            background-color: var(--gray-color);
-            padding: 15px;
+
+        .credit-bar {
+            height: 5px;
+            background-color: var(--success-color);
             border-radius: 5px;
-            margin-bottom: 15px;
-        }
-        
-        .block-detail {
-            text-align: center;
-        }
-        
-        .block-detail h4 {
-            font-size: 0.9rem;
-            color: #777;
-            margin-bottom: 5px;
-        }
-        
-        .block-detail p {
-            font-weight: bold;
-        }
-        
-        .triple-entry-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        .triple-entry-table th, .triple-entry-table td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .triple-entry-table th {
-            background-color: var(--gray-color);
-            font-weight: normal;
-            color: #777;
-        }
-        
-        .hash-value {
-            font-family: monospace;
-            font-size: 0.85rem;
-            background-color: var(--gray-color);
-            padding: 5px;
-            border-radius: 3px;
-            word-break: break-all;
-        }
-        
-        @media (max-width: 992px) {
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .balance-section, .transactions-section, .triple-entry-section {
-                grid-column: span 1;
-            }
-        }
-        
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.5);
-        }
-        
-        .modal-content {
-            background-color: white;
-            margin: 10% auto;
-            padding: 20px;
-            border-radius: 10px;
-            width: 80%;
-            max-width: 500px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        
-        .close:hover {
-            color: black;
-        }
-        
-        .modal-header {
-            margin-bottom: 20px;
-        }
-        
-        .modal-header h2 {
-            margin: 0;
-        }
-        
-        .form-group {
-            margin-bottom: 15px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        
-        .form-control {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 1rem;
-        }
-        
-        .submit-btn {
-            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 10px 15px;
-            font-size: 1rem;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
-        }
-        
-        .submit-btn:hover {
-            opacity: 0.9;
         }
 
-        .user-profile {
-        display: flex;
-        align-items: center;
-        justify-content: flex-end; /* Align items to the right */
-        gap: 10px; /* Add spacing between elements */
-    }
-
-    .logout-btn {
-        background: none;
-        border: none;
-        color: white;
-        font-size: 1.2rem;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .logout-btn:hover {
-        opacity: 0.8;
-    }
+        .debit-bar {
+            height: 5px;
+            background-color: var(--danger-color);
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
@@ -463,7 +233,6 @@
                 <li class="nav-item"><a href="Recibir.html" class="nav-link">Recibir</a></li>
                 <li class="nav-item"><a href="Deposita.html" class="nav-link">Depositar</a></li>
             </ul>
-            </ul>
             <div class="user-profile">
                 <div id="user-avatar" class="user-avatar">U</div>
                 <span id="user-name">Usuario</span>
@@ -473,41 +242,10 @@
             </div>
         </div>
     </nav>
-    
-    <script>
-        function logout() {
-            // Clear localStorage and redirect to login page
-            localStorage.clear();
-            window.location.href = 'index.html';
-        }
-    </script>
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Retrieve the email from local storage or use a default value
-            const email = localStorage.getItem('email') || 'usuario@correo.com';
-    
-            // Hash the email using SHA-256
-            const hashedEmail = CryptoJS.SHA256(email).toString(CryptoJS.enc.Hex);
-    
-            // Store the hashed email in local storage
-            localStorage.setItem('hashed_email', hashedEmail);
-    
-            // Display the email and avatar
-            document.getElementById('user-name').textContent = email;
-            document.getElementById('user-avatar').textContent = email.charAt(0).toUpperCase();
-    
-            // Display the hashed email in the balance ID section
-            document.querySelector('.balance-id').textContent = hashedEmail;
-        });
-    </script>
-    
+
     <main>
         <div class="container">
             <div class="dashboard-grid">
-                <!-- Balance Section -->
                 <section class="balance-section">
                     <div class="balance-card">
                         <div class="balance-title">Tu Balance</div>
@@ -516,20 +254,8 @@
                         <div class="quick-actions">
                             <button class="btn" id="transferBtn"><i class="fas fa-exchange-alt"></i> Transferir</button>
                             <button class="btn" id="recibirbtn"><i class="fas fa-qrcode"></i> Recibir</button>
-
-                            <script>
-                                document.getElementById('transferBtn').addEventListener('click', function () {
-                                    window.location.href = 'Transacciones.html';
-                                });
-                                document.getElementById('recibirbtn').addEventListener('click', function () {
-                                    window.location.href = 'Recibir.html';
-                                });
-                            </script>                            
-                            
-                        
                         </div>
                     </div>
-                    
                     <div class="card">
                         <div class="card-header">
                             <div class="card-title">Resumen de Actividad</div>
@@ -541,7 +267,7 @@
                                     <span class="credit">+ $00.00</span>
                                 </div>
                                 <div style="height: 5px; background-color: #f0f2f5; border-radius: 5px;">
-                                    <div style="height: 100%; width: 75%; background-color: #28a745; border-radius: 5px;"></div>
+                                    <div class="credit-bar" style="width: 0%;"></div>
                                 </div>
                             </div>
                             <div>
@@ -550,22 +276,16 @@
                                     <span class="debit">- $00.00</span>
                                 </div>
                                 <div style="height: 5px; background-color: #f0f2f5; border-radius: 5px;">
-                                    <div style="height: 100%; width: 40%; background-color: #dc3545; border-radius: 5px;"></div>
+                                    <div class="debit-bar" style="width: 0%;"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </section>
-                
-                 <!-- Sección de transacciones -->
-                 <section class="transactions-section">
+                <section class="transactions-section">
                     <div class="card">
                         <div class="card-header">
                             <div class="card-title">Últimas Transacciones</div>
-                            <div class="search-box">
-                                <i class="fas fa-search"></i>
-                                <input type="text" placeholder="Buscar transacciones...">
-                            </div>
                         </div>
                         <div class="transactions-list"></div>
                     </div>
@@ -576,167 +296,110 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script>
-       async function cargarTransacciones(email, emailHash) {
-    try {
-        const res = await fetch("https://cabo9yx4ac.execute-api.us-east-1.amazonaws.com/dev/HistorialTransaction", {
-            method: 'POST',
-            body: JSON.stringify({ email: email, email_hash: emailHash }),
-            headers: { 'Content-Type': 'application/json' }
-        });
+        async function cargarTransaccionesCompletas(email, emailHash) {
+            try {
+                const [resEnviadas, resRecibidas] = await Promise.all([
+                    fetch("https://cabo9yx4ac.execute-api.us-east-1.amazonaws.com/dev/HistorialTransaction", {
+                        method: 'POST',
+                        body: JSON.stringify({ email: email, email_hash: emailHash }),
+                        headers: { 'Content-Type': 'application/json' }
+                    }),
+                    fetch("https://cabo9yx4ac.execute-api.us-east-1.amazonaws.com/dev/HashHistorialTransaction", {
+                        method: 'POST',
+                        body: JSON.stringify({ email_hash: emailHash }),
+                        headers: { 'Content-Type': 'application/json' }
+                    })
+                ]);
 
-        if (!res.ok) {
-            console.error("Error en la respuesta HTTP:", res.status);
-            return;
-        }
+                if (!resEnviadas.ok || !resRecibidas.ok) {
+                    console.error("Error en una de las respuestas:", resEnviadas.status, resRecibidas.status);
+                    return;
+                }
 
-        const json = await res.json();
-        const data = Array.isArray(json) ? json : json.body;
+                const dataEnviadas = await resEnviadas.json();
+                const dataRecibidas = await resRecibidas.json();
 
-        if (!Array.isArray(data)) {
-            console.error("Respuesta no es un array. Respuesta recibida:", data);
-            return;
-        }
+                const enviadas = Array.isArray(dataEnviadas) ? dataEnviadas : dataEnviadas.body || [];
+                const recibidas = Array.isArray(dataRecibidas) ? dataRecibidas : dataRecibidas.body || [];
 
-        const container = document.querySelector(".transactions-list");
-        container.innerHTML = "";
+                const todas = [...enviadas, ...recibidas];
+                const idsVistos = new Set();
+                const transaccionesUnicas = todas.filter(tx => {
+                    if (idsVistos.has(tx.transaction_id)) return false;
+                    idsVistos.add(tx.transaction_id);
+                    return true;
+                });
 
-        const transaccionesUnicas = [];
-        const idsVistos = new Set();
+                const container = document.querySelector(".transactions-list");
+                container.innerHTML = "";
 
-        data.forEach(tx => {
-            if (!idsVistos.has(tx.transaction_id)) {
-                transaccionesUnicas.push(tx);
-                idsVistos.add(tx.transaction_id);
+                let totalIngresos = 0;
+                let totalGastos = 0;
+
+                transaccionesUnicas.forEach(tx => {
+                    const esRemitente = tx.remitente === email;
+                    const titulo = esRemitente ? "Pago Enviado" : "Pago Recibido";
+                    const direccion = esRemitente ? tx.destinatario : tx.remitente;
+                    const etiqueta = esRemitente ? "Para" : "De";
+                    const icono = esRemitente ? "fa-arrow-up" : "fa-arrow-down";
+                    const monto = parseFloat(tx.monto);
+                    const clase = esRemitente ? 'debit' : 'credit';
+
+                    if (esRemitente) {
+                        totalGastos += monto;
+                    } else {
+                        totalIngresos += monto;
+                    }
+
+                    container.innerHTML += `
+                        <div class="transaction-item">
+                            <div class="transaction-info">
+                                <div class="transaction-icon">
+                                    <i class="fas ${icono}"></i>
+                                </div>
+                                <div class="transaction-details">
+                                    <strong>${titulo}</strong><br>
+                                    <small>ID: <code>${tx.transaction_id}</code></small><br>
+                                    <small>${etiqueta}: ${direccion}</small><br>
+                                    <small>Timestamp: ${tx.timestamp}</small>
+                                </div>
+                            </div>
+                            <div class="transaction-amount ${clase}">
+                                ${esRemitente ? '-' : '+'} $${monto.toLocaleString()}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                const balance = totalIngresos - totalGastos;
+                document.querySelector('.balance-amount').textContent = `$${balance.toLocaleString()}`;
+                document.querySelector('.credit').textContent = `+ $${totalIngresos.toLocaleString()}`;
+                document.querySelector('.debit').textContent = `- $${totalGastos.toLocaleString()}`;
+
+                const ingresosBar = document.querySelector('.credit-bar');
+                const gastosBar = document.querySelector('.debit-bar');
+                const total = totalIngresos + totalGastos;
+                ingresosBar.style.width = total > 0 ? `${(totalIngresos / total) * 100}%` : '0%';
+                gastosBar.style.width = total > 0 ? `${(totalGastos / total) * 100}%` : '0%';
+
+            } catch (err) {
+                console.error("Error al cargar transacciones:", err);
             }
-        });
+        }
 
-        transaccionesUnicas.forEach(tx => {
-            const esRemitente = tx.remitente === email;
-            const titulo = esRemitente ? "Pago Enviado" : "Pago Recibido";
-            const direccion = esRemitente ? tx.destinatario : tx.remitente;
-            const etiqueta = esRemitente ? "Para" : "De";
-            const icono = esRemitente ? "fa-arrow-up" : "fa-arrow-down";
-            const monto = esRemitente ? `- $${tx.monto.toLocaleString()}` : `+ $${tx.monto.toLocaleString()}`;
-            const clase = esRemitente ? 'debit' : 'credit';
-
-            container.innerHTML += `
-                <div class="transaction-item">
-                    <div class="transaction-info">
-                        <div class="transaction-icon">
-                            <i class="fas ${icono}"></i>
-                        </div>
-                        <div class="transaction-details">
-                            <strong>${titulo}</strong><br>
-                            <small>ID: <code>${tx.transaction_id}</code></small><br>
-                            <small>${etiqueta}: ${direccion}</small><br>
-                            <small>Timestamp: ${tx.timestamp}</small>
-                        </div>
-                    </div>
-                    <div class="transaction-amount ${clase}">
-                        ${monto}
-                    </div>
-                </div>
-            `;
-        });
-
-    } catch (err) {
-        console.error("Error al cargar transacciones:", err);
-    }
-}
-
-
-    
         document.addEventListener('DOMContentLoaded', function () {
             const email = localStorage.getItem('email') || 'usuario@correo.com';
+            const hashedEmail = CryptoJS.SHA256(email).toString(CryptoJS.enc.Hex);
             document.getElementById('user-name').textContent = email;
             document.getElementById('user-avatar').textContent = email.charAt(0).toUpperCase();
-            document.querySelector('.balance-id').textContent = email;
-            cargarTransacciones(email); // solo email
+            document.querySelector('.balance-id').textContent = hashedEmail;
+            cargarTransaccionesCompletas(email, hashedEmail);
         });
-    </script>
 
-<script>
-    async function cargarTransaccionesCompletas(email, emailHash) {
-        try {
-            const [resEnviadas, resRecibidas] = await Promise.all([
-                fetch("https://cabo9yx4ac.execute-api.us-east-1.amazonaws.com/dev/HistorialTransaction", {
-                    method: 'POST',
-                    body: JSON.stringify({ email: email, email_hash: emailHash }),
-                    headers: { 'Content-Type': 'application/json' }
-                }),
-                fetch("https://cabo9yx4ac.execute-api.us-east-1.amazonaws.com/dev/HashHistorialTransaction", {
-                    method: 'POST',
-                    body: JSON.stringify({ email_hash: emailHash }),
-                    headers: { 'Content-Type': 'application/json' }
-                })
-            ]);
-
-            if (!resEnviadas.ok || !resRecibidas.ok) {
-                console.error("Error en una de las respuestas:", resEnviadas.status, resRecibidas.status);
-                return;
-            }
-
-            const dataEnviadas = await resEnviadas.json();
-            const dataRecibidas = await resRecibidas.json();
-
-            const enviadas = Array.isArray(dataEnviadas) ? dataEnviadas : dataEnviadas.body || [];
-            const recibidas = Array.isArray(dataRecibidas) ? dataRecibidas : dataRecibidas.body || [];
-
-            // Fusionar y eliminar duplicados
-            const todas = [...enviadas, ...recibidas];
-            const idsVistos = new Set();
-            const transaccionesUnicas = todas.filter(tx => {
-                if (idsVistos.has(tx.transaction_id)) return false;
-                idsVistos.add(tx.transaction_id);
-                return true;
-            });
-
-            const container = document.querySelector(".transactions-list");
-            container.innerHTML = "";
-
-            transaccionesUnicas.forEach(tx => {
-                const esRemitente = tx.remitente === email;
-                const titulo = esRemitente ? "Pago Enviado" : "Pago Recibido";
-                const direccion = esRemitente ? tx.destinatario : tx.remitente;
-                const etiqueta = esRemitente ? "Para" : "De";
-                const icono = esRemitente ? "fa-arrow-up" : "fa-arrow-down";
-                const monto = esRemitente ? `- $${tx.monto.toLocaleString()}` : `+ $${tx.monto.toLocaleString()}`;
-                const clase = esRemitente ? 'debit' : 'credit';
-
-                container.innerHTML += `
-                    <div class="transaction-item">
-                        <div class="transaction-info">
-                            <div class="transaction-icon">
-                                <i class="fas ${icono}"></i>
-                            </div>
-                            <div class="transaction-details">
-                                <strong>${titulo}</strong><br>
-                                <small>ID: <code>${tx.transaction_id}</code></small><br>
-                                <small>${etiqueta}: ${direccion}</small><br>
-                                <small>Timestamp: ${tx.timestamp}</small>
-                            </div>
-                        </div>
-                        <div class="transaction-amount ${clase}">
-                            ${monto}
-                        </div>
-                    </div>
-                `;
-            });
-
-        } catch (err) {
-            console.error("Error al cargar transacciones:", err);
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'index.html';
         }
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
-        const email = localStorage.getItem('email') || 'usuario@correo.com';
-        const hashedEmail = CryptoJS.SHA256(email).toString(CryptoJS.enc.Hex);
-        document.getElementById('user-name').textContent = email;
-        document.getElementById('user-avatar').textContent = email.charAt(0).toUpperCase();
-        document.querySelector('.balance-id').textContent = hashedEmail;
-        cargarTransaccionesCompletas(email, hashedEmail);
-    });
-</script>
-
-    
-    
+    </script>
+</body>
+</html>
