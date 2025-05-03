@@ -429,7 +429,16 @@
                     `;
                 });
 
-                const balance = totalIngresos - totalGastos;
+                let balance = totalIngresos - totalGastos;
+                // Evitar mostrar valores negativos
+                    if (balance < 0) {
+                        balance = 0;
+                    }
+
+                document.querySelector('.balance-amount').textContent = `$${balance.toLocaleString()}`;
+                // Guardar el balance en localStorage para usarlo en otras páginas
+                localStorage.setItem('balance', balance);
+
                 document.querySelector('.balance-amount').textContent = `$${balance.toLocaleString()}`;
                 document.querySelector('.credit').textContent = `+ $${totalIngresos.toLocaleString()}`;
                 document.querySelector('.debit').textContent = `- $${totalGastos.toLocaleString()}`;
@@ -439,6 +448,8 @@
                 const total = totalIngresos + totalGastos;
                 ingresosBar.style.width = total > 0 ? `${(totalIngresos / total) * 100}%` : '0%';
                 gastosBar.style.width = total > 0 ? `${(totalGastos / total) * 100}%` : '0%';
+
+                
 
             } catch (err) {
                 console.error("Error al cargar transacciones:", err);
