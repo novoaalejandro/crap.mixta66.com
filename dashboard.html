@@ -221,6 +221,28 @@
             background-color: var(--danger-color);
             border-radius: 5px;
         }
+        
+        .user-profile {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end; /* Align items to the right */
+        gap: 10px; /* Add spacing between elements */
+    }
+
+    .logout-btn {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.2rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .logout-btn:hover {
+        opacity: 0.8;
+    }
     </style>
 </head>
 <body>
@@ -286,6 +308,10 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="card-title">Últimas Transacciones</div>
+                            <div class="search-bar">
+                                <input type="text" id="search-input" class="form-control" placeholder="Buscar transacciones...">
+                                <button class="btn" id="search-btn"><i class="fas fa-search"></i></button>
+                            </div>
                         </div>
                         <div class="transactions-list"></div>
                     </div>
