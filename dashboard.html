@@ -654,4 +654,138 @@
             cargarTransacciones(email); // solo email
         });
     </script>
+
+<script>
+async function cargarTransacciones(email, emailHash) {
+    try {
+        const res = await fetch("https://cabo9yx4ac.execute-api.us-east-1.amazonaws.com/dev/HistorialTransaction", {
+            method: 'POST',
+            body: JSON.stringify({ email: email, email_hash: emailHash }),
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (!res.ok) {
+            console.error("Error en la respuesta HTTP:", res.status);
+            return;
+        }
+
+        const json = await res.json();
+        const data = Array.isArray(json) ? json : json.body;
+
+        if (!Array.isArray(data)) {
+            console.error("Respuesta no es un array. Respuesta recibida:", data);
+            return;
+        }
+
+        const container = document.querySelector(".transactions-list");
+        const idsVistos = new Set();
+
+        data.forEach(tx => {
+            if (idsVistos.has(tx.transaction_id)) return;
+            idsVistos.add(tx.transaction_id);
+
+            const esRemitente = tx.remitente === email;
+            const titulo = esRemitente ? "Pago Enviado" : "Pago Recibido";
+            const direccion = esRemitente ? tx.destinatario : tx.remitente;
+            const etiqueta = esRemitente ? "Para" : "De";
+            const icono = esRemitente ? "fa-arrow-up" : "fa-arrow-down";
+            const monto = esRemitente ? `- $${tx.monto.toLocaleString()}` : `+ $${tx.monto.toLocaleString()}`;
+            const clase = esRemitente ? 'debit' : 'credit';
+
+            container.innerHTML += `
+                <div class="transaction-item">
+                    <div class="transaction-info">
+                        <div class="transaction-icon">
+                            <i class="fas ${icono}"></i>
+                        </div>
+                        <div class="transaction-details">
+                            <strong>${titulo}</strong><br>
+                            <small>ID: <code>${tx.transaction_id}</code></small><br>
+                            <small>${etiqueta}: ${direccion}</small><br>
+                            <small>Timestamp: ${tx.timestamp}</small>
+                        </div>
+                    </div>
+                    <div class="transaction-amount ${clase}">
+                        ${monto}
+                    </div>
+                </div>
+            `;
+        });
+
+    } catch (err) {
+        console.error("Error al cargar transacciones:", err);
+    }
+}
+
+async function cargarTransaccionesRecibidas(emailHash) {
+    try {
+        const res = await fetch("https://cabo9yx4ac.execute-api.us-east-1.amazonaws.com/dev/HashHistorialTransaction", {
+            method: 'POST',
+            body: JSON.stringify({ email_hash: emailHash }),
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (!res.ok) {
+            console.error("Error en la respuesta HTTP:", res.status);
+            return;
+        }
+
+        const json = await res.json();
+        const data = Array.isArray(json) ? json : json.body;
+
+        if (!Array.isArray(data)) {
+            console.error("Respuesta no es un array. Recibido:", data);
+            return;
+        }
+
+        const container = document.querySelector(".transactions-list");
+        const idsVistos = new Set();
+
+        data.forEach(tx => {
+            if (idsVistos.has(tx.transaction_id)) return;
+            idsVistos.add(tx.transaction_id);
+
+            const monto = `+ $${tx.monto.toLocaleString()}`;
+            const icono = "fa-arrow-down";
+
+            container.innerHTML += `
+                <div class="transaction-item">
+                    <div class="transaction-info">
+                        <div class="transaction-icon">
+                            <i class="fas ${icono}"></i>
+                        </div>
+                        <div class="transaction-details">
+                            <strong>Pago Recibido</strong><br>
+                            <small>ID: <code>${tx.transaction_id}</code></small><br>
+                            <small>De: ${tx.remitente}</small><br>
+                            <small>Timestamp: ${tx.timestamp}</small>
+                        </div>
+                    </div>
+                    <div class="transaction-amount credit">${monto}</div>
+                </div>
+            `;
+        });
+    } catch (err) {
+        console.error("Error al cargar transacciones recibidas:", err);
+    }
+}
+
+
+// DOMContentLoaded principal
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    const email = localStorage.getItem('email') || 'usuario@correo.com';
+    const emailHash = CryptoJS.SHA256(email).toString(CryptoJS.enc.Hex);
+
+    document.getElementById('user-name').textContent = email;
+    document.getElementById('user-avatar').textContent = email.charAt(0).toUpperCase();
+    document.querySelector('.balance-id').textContent = email;
+
+    cargarTransacciones(email, emailHash);        // Enviadas (remitente)
+    cargarTransaccionesRecibidas(emailHash);      // Recibidas (destinatario)
+});
+</script>
+
+    
     
