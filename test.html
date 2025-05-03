@@ -221,60 +221,6 @@
             background-color: var(--danger-color);
             border-radius: 5px;
         }
-
-        
-        .user-profile {
-        display: flex;
-        align-items: center;
-        justify-content: flex-end; /* Align items to the right */
-        gap: 10px; /* Add spacing between elements */
-    }
-
-    .logout-btn {
-        background: none;
-        border: none;
-        color: white;
-        font-size: 1.2rem;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .logout-btn:hover {
-        opacity: 0.8;
-    }
-
-    
-    .search-bar {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-top: 10px;
-    }
-
-    .search-bar input {
-        flex: 1;
-        padding: 8px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        font-size: 1rem;
-    }
-
-    .search-bar button {
-        padding: 8px 15px;
-        background-color: var(--primary-color);
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 1rem;
-    }
-
-    .search-bar button:hover {
-        background-color: var(--secondary-color);
-    }
-</style>
     </style>
 </head>
 <body>
@@ -340,10 +286,6 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="card-title">Últimas Transacciones</div>
-                            <div class="search-bar">
-                                <input type="text" id="search-input" class="form-control" placeholder="Buscar transacciones...">
-                                <button class="btn" id="search-btn"><i class="fas fa-search"></i></button>
-                            </div>
                         </div>
                         <div class="transactions-list"></div>
                     </div>
@@ -354,7 +296,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script>
-       async function cargarTransaccionesCompletas(email, emailHash) {
+        async function cargarTransaccionesCompletas(email, emailHash) {
             try {
                 const [resEnviadas, resRecibidas] = await Promise.all([
                     fetch("https://cabo9yx4ac.execute-api.us-east-1.amazonaws.com/dev/HistorialTransaction", {
@@ -458,7 +400,6 @@
             localStorage.clear();
             window.location.href = 'index.html';
         }
-
     </script>
 </body>
 </html>
