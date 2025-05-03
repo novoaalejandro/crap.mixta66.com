@@ -483,22 +483,26 @@
     </script>
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const email = localStorage.getItem('email') || 'Usuario';
-        const initial = email.charAt(0).toUpperCase();
-
-        // Display user name and avatar
-        document.getElementById('user-name').textContent = email;
-        document.getElementById('user-avatar').textContent = initial;
-
-        // Hash the email using SHA-256
-        const hashedEmail = CryptoJS.SHA256(email).toString(CryptoJS.enc.Hex);
-
-        // Replace the hardcoded address with the hashed email
-        document.querySelector('.balance-id').textContent = hashedEmail;
-    });
-</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Retrieve the email from local storage or use a default value
+            const email = localStorage.getItem('email') || 'usuario@correo.com';
+    
+            // Hash the email using SHA-256
+            const hashedEmail = CryptoJS.SHA256(email).toString(CryptoJS.enc.Hex);
+    
+            // Store the hashed email in local storage
+            localStorage.setItem('hashed_email', hashedEmail);
+    
+            // Display the email and avatar
+            document.getElementById('user-name').textContent = email;
+            document.getElementById('user-avatar').textContent = email.charAt(0).toUpperCase();
+    
+            // Display the hashed email in the balance ID section
+            document.querySelector('.balance-id').textContent = hashedEmail;
+        });
+    </script>
     
     <main>
         <div class="container">
