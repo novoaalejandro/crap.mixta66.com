@@ -553,8 +553,8 @@
                     </div>
                 </section>
                 
-                <!-- Transactions Section -->
-                <section class="transactions-section">
+                 <!-- Sección de transacciones -->
+                 <section class="transactions-section">
                     <div class="card">
                         <div class="card-header">
                             <div class="card-title">Últimas Transacciones</div>
@@ -563,139 +563,91 @@
                                 <input type="text" placeholder="Buscar transacciones...">
                             </div>
                         </div>
-                        <div class="filter-bar">
-                            <select class="filter-dropdown">
-                                <option value="all">Todas las transacciones</option>
-                                <option value="incoming">Entrantes</option>
-                                <option value="outgoing">Salientes</option>
-                            </select>
-                            <select class="filter-dropdown">
-                                <option value="30">Últimos 30 días</option>
-                                <option value="90">Últimos 90 días</option>
-                                <option value="180">Últimos 6 meses</option>
-                                <option value="365">Último año</option>
-                            </select>
-                        </div>
-                        <div class="transactions-list">
-                            <!-- Transaction 1 -->
-                            <div class="transaction-item">
-                                <div class="transaction-info">
-                                    <div class="transaction-icon">
-                                        <i class="fas fa-arrow-down"></i>
-                                    </div>
-                                    <div class="transaction-details">
-                                        <h4>Depósito Recibido</h4>
-                                        <p>De: 0x742...a8f3</p>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="transaction-amount credit">+ $2,500.00</div>
-                                    <div class="transaction-date">Hoy, 14:25</div>
-                                </div>
-                            </div>
-                            
-                            <!-- Transaction 2 -->
-                            <div class="transaction-item">
-                                <div class="transaction-info">
-                                    <div class="transaction-icon">
-                                        <i class="fas fa-arrow-up"></i>
-                                    </div>
-                                    <div class="transaction-details">
-                                        <h4>Pago Realizado</h4>
-                                        <p>A: 0x935...b7e1</p>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="transaction-amount debit">- $780.50</div>
-                                    <div class="transaction-date">Ayer, 09:15</div>
-                                </div>
-                            </div>
-                            
-                            <!-- Transaction 3 -->
-                            <div class="transaction-item">
-                                <div class="transaction-info">
-                                    <div class="transaction-icon">
-                                        <i class="fas fa-arrow-down"></i>
-                                    </div>
-                                    <div class="transaction-details">
-                                        <h4>Pago Recibido</h4>
-                                        <p>De: 0x512...c4d2</p>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="transaction-amount credit">+ $1,250.00</div>
-                                    <div class="transaction-date">03 Abr, 16:40</div>
-                                </div>
-                            </div>
-                            
-                            <!-- Transaction 4 -->
-                            <div class="transaction-item">
-                                <div class="transaction-info">
-                                    <div class="transaction-icon">
-                                        <i class="fas fa-arrow-up"></i>
-                                    </div>
-                                    <div class="transaction-details">
-                                        <h4>Transferencia</h4>
-                                        <p>A: 0x371...e9a5</p>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="transaction-amount debit">- $320.75</div>
-                                    <div class="transaction-date">01 Abr, 11:30</div>
-                                </div>
-                            </div>
-                            
-                            <!-- Transaction 5 -->
-                            <div class="transaction-item">
-                                <div class="transaction-info">
-                                    <div class="transaction-icon">
-                                        <i class="fas fa-arrow-down"></i>
-                                    </div>
-                                    <div class="transaction-details">
-                                        <h4>Depósito Inicial</h4>
-                                        <p>De: 0x492...f7b6</p>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="transaction-amount credit">+ $5,000.00</div>
-                                    <div class="transaction-date">28 Mar, 09:05</div>
-                                </div>
-                            </div>
-                        </div>
+                        <div class="transactions-list"></div>
                     </div>
                 </section>
-                <script>
-                    async function cargarTransacciones(email, emailHash) {
-                        const res = await fetch("https://cabo9yx4ac.execute-api.us-east-1.amazonaws.com/dev/Transaction", {
-                            method: 'POST',
-                            body: JSON.stringify({ email: email, email_hash: emailHash }),
-                            headers: { 'Content-Type': 'application/json' }
-                        });
-                    
-                        const data = await res.json();
-                        const container = document.querySelector(".transactions-list");
-                        container.innerHTML = "";  // Limpia previos
-                    
-                        data.forEach(tx => {
-                            container.innerHTML += `
-                                <div class="transaction-item">
-                                    <div class="transaction-info">
-                                        <div class="transaction-icon">
-                                            <i class="fas ${tx.icon}"></i>
-                                        </div>
-                                        <div class="transaction-details">
-                                            <h4>${tx.title}</h4>
-                                            <p>${tx.credit ? 'De' : 'A'}: ${tx.address}</p>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="transaction-amount ${tx.credit ? 'credit' : 'debit'}">${tx.amount}</div>
-                                        <div class="transaction-date">${tx.date}</div>
-                                    </div>
-                                </div>
-                            `;
-                        });
-                    }
-                    </script>
-                    
-                
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script>
+       async function cargarTransacciones(email, emailHash) {
+    try {
+        const res = await fetch("https://cabo9yx4ac.execute-api.us-east-1.amazonaws.com/dev/HistorialTransaction", {
+            method: 'POST',
+            body: JSON.stringify({ email: email, email_hash: emailHash }),
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (!res.ok) {
+            console.error("Error en la respuesta HTTP:", res.status);
+            return;
+        }
+
+        const json = await res.json();
+        const data = Array.isArray(json) ? json : json.body;
+
+        if (!Array.isArray(data)) {
+            console.error("Respuesta no es un array. Respuesta recibida:", data);
+            return;
+        }
+
+        const container = document.querySelector(".transactions-list");
+        container.innerHTML = "";
+
+        const transaccionesUnicas = [];
+        const idsVistos = new Set();
+
+        data.forEach(tx => {
+            if (!idsVistos.has(tx.transaction_id)) {
+                transaccionesUnicas.push(tx);
+                idsVistos.add(tx.transaction_id);
+            }
+        });
+
+        transaccionesUnicas.forEach(tx => {
+            const esRemitente = tx.remitente === email;
+            const titulo = esRemitente ? "Pago Enviado" : "Pago Recibido";
+            const direccion = esRemitente ? tx.destinatario : tx.remitente;
+            const etiqueta = esRemitente ? "Para" : "De";
+            const icono = esRemitente ? "fa-arrow-up" : "fa-arrow-down";
+            const monto = esRemitente ? `- $${tx.monto.toLocaleString()}` : `+ $${tx.monto.toLocaleString()}`;
+            const clase = esRemitente ? 'debit' : 'credit';
+
+            container.innerHTML += `
+                <div class="transaction-item">
+                    <div class="transaction-info">
+                        <div class="transaction-icon">
+                            <i class="fas ${icono}"></i>
+                        </div>
+                        <div class="transaction-details">
+                            <strong>${titulo}</strong><br>
+                            <small>ID: <code>${tx.transaction_id}</code></small><br>
+                            <small>${etiqueta}: ${direccion}</small><br>
+                            <small>Timestamp: ${tx.timestamp}</small>
+                        </div>
+                    </div>
+                    <div class="transaction-amount ${clase}">
+                        ${monto}
+                    </div>
+                </div>
+            `;
+        });
+
+    } catch (err) {
+        console.error("Error al cargar transacciones:", err);
+    }
+}
+
+
+    
+        document.addEventListener('DOMContentLoaded', function () {
+            const email = localStorage.getItem('email') || 'usuario@correo.com';
+            document.getElementById('user-name').textContent = email;
+            document.getElementById('user-avatar').textContent = email.charAt(0).toUpperCase();
+            document.querySelector('.balance-id').textContent = email;
+            cargarTransacciones(email); // solo email
+        });
+    </script>
+    
