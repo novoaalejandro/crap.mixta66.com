@@ -249,6 +249,7 @@
                 <li class="nav-item"><a href="dashboard.html" class="nav-link">Home</a></li>
                 <li class="nav-item"><a href="Transacciones.html" class="nav-link active">Transacciones</a></li>
                 <li class="nav-item"><a href="Recibir.html" class="nav-link">Recibir</a></li>
+                <li class="nav-item"><a href="Crear_llaves.html" class="nav-link ">Crear Llaves</a></li>
                
             </ul>
               
@@ -291,27 +292,26 @@
                         
                 
                     <!-- Nueva sección para realizar transacciones -->
-                    <div class="card" style="margin-top: 20px;">
-                        <div class="card-header">
-                            <div class="card-title">Realizar Transacción</div>
-                        </div>
-                        <div class="card-content">
-                            <form id="transaction-form" class="transaction-form">
-                                <div class="form-group">
-                                    <label for="recipient-address">Dirección del Destinatario</label>
-                                    <input type="text" id="recipient-address" class="form-control" placeholder="Ejemplo: 0x1234...abcd" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="transaction-amount">Monto</label>
-                                    <input type="number" id="transaction-amount" class="form-control" placeholder="Ejemplo: 100.00" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="transaction-note">Nota (Opcional)</label>
-                                    <textarea id="transaction-note" class="form-control" placeholder="Escribe una nota..."></textarea>
-                                </div>
-                                <button type="submit" class="submit-btn">Enviar</button>
-                            </form>
-                        </div>
+                    <div class="card-content">
+                        <form id="transaction-form" class="transaction-form">
+                            <div class="form-group">
+                                <label for="recipient-address">Dirección del Destinatario</label>
+                                <input type="text" id="recipient-address" class="form-control" placeholder="Ejemplo: 0x1234...abcd" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="transaction-amount">Monto</label>
+                                <input type="number" id="transaction-amount" class="form-control" placeholder="Ejemplo: 100.00" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="transaction-note">Nota (Opcional)</label>
+                                <textarea id="transaction-note" class="form-control" placeholder="Escribe una nota..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="private-key">Clave Privada</label>
+                                <input type="password" id="private-key" class="form-control" placeholder="Introduce tu clave privada" required>
+                            </div>
+                            <button type="submit" class="submit-btn">Enviar</button>
+                        </form>
                     </div>
                     
                     <style>
@@ -457,6 +457,12 @@
             modal.style.display = 'block';
             return;
         }
+        if (!privateKey) {
+        title.textContent = "Clave Privada requerida";  
+        message.textContent = "Por favor, introduce tu clave privada.";
+        modal.style.display = 'block';
+        return;
+    }
 
         // Validar saldo
         const balanceActual = parseFloat(localStorage.getItem('balance') || '0');
