@@ -13,6 +13,8 @@
             --dark-color: #333;
             --light-color: #f4f4f4;
             --gray-color: #f0f2f5;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
         }
 
         * {
@@ -163,6 +165,54 @@
             overflow-x: auto;
             font-size: 0.9rem;
         }
+
+        /* Modal styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-content h2 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .modal-content p {
+            font-size: 1rem;
+            color: var(--dark-color);
+        }
+
+        .close {
+            color: var(--danger-color);
+            float: right;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: var(--dark-color);
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
@@ -173,7 +223,7 @@
                 <li class="nav-item"><a href="dashboard.html" class="nav-link">Home</a></li>
                 <li class="nav-item"><a href="Transacciones.html" class="nav-link">Transacciones</a></li>
                 <li class="nav-item"><a href="Recibir.html" class="nav-link">Recibir</a></li>
-                <li class="nav-item"><a href="Crear_llaves.html" class="nav-link ">Crear Llaves</a></li>
+                <li class="nav-item"><a href="Crear_llaves.html" class="nav-link active">Crear Llaves</a></li>
             </ul>
             <div class="user-profile">
                 <div id="user-avatar" class="user-avatar">U</div>
@@ -202,6 +252,7 @@
                 <pre id="private-key"></pre>
                 <button id="download-private-key" class="btn" style="margin-top: 10px;">Descargar Clave Privada</button>
             </div>
+            <button id="send-keys-btn" class="btn" style="margin-top: 20px;">Enviar Llaves al Servidor</button>
         </div>
     </div>
 
@@ -220,56 +271,125 @@
         }
 
         document.getElementById('generate-keys-btn').addEventListener('click', async function () {
-    try {
-        const response = await fetch('https://cabo9yx4ac.execute-api.us-east-1.amazonaws.com/dev/generate-keys', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ algorithm: "ec" }) // puedes cambiar a "rsa" si quieres
+            try {
+                const response = await fetch('https://cabo9yx4ac.execute-api.us-east-1.amazonaws.com/dev/generate-keys', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ algorithm: "ec" }) // puedes cambiar a "rsa" si quieres
+                });
+
+                if (!response.ok) throw new Error('Error al generar llaves');
+
+                const data = await response.json();
+
+                // Mostrar llaves
+                const publicKey = data.public_key || 'Llave pública no disponible';
+                const privateKey = data.private_key || 'Llave privada no disponible';
+
+                document.getElementById('public-key').textContent = publicKey;
+                document.getElementById('private-key').textContent = privateKey;
+                document.getElementById('key-display').style.display = 'block';
+
+                // Guardar localmente
+                localStorage.setItem('publicKey', publicKey);
+                localStorage.setItem('privateKey', privateKey);
+
+                // Enable download functionality
+                document.getElementById('download-public-key').addEventListener('click', function () {
+                    downloadFile('public_key.txt', publicKey);
+                });
+
+                document.getElementById('download-private-key').addEventListener('click', function () {
+                    downloadFile('private_key.txt', privateKey);
+                });
+
+            } catch (error) {
+                showAlert('Hubo un error generando las llaves: ' + error.message, 'danger');
+                console.error(error);
+            }
         });
 
-        if (!response.ok) throw new Error('Error al generar llaves');
+        // Función para enviar email y public key al servidor
+        async function sendKeyToDirectory() {
+            const email = localStorage.getItem('email');
+            const publicKey = localStorage.getItem('publicKey');
 
-        const data = await response.json();
+            if (!email || !publicKey) {
+                showAlert('No se encontraron el email o la clave pública en el almacenamiento local.', 'danger');
+                return;
+            }
 
-        // Mostrar llaves
-        const publicKey = data.public_key || 'Llave pública no disponible';
-        const privateKey = data.private_key || 'Llave privada no disponible';
+            try {
+                const response = await fetch('https://cabo9yx4ac.execute-api.us-east-1.amazonaws.com/dev/Directory', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        public_key: publicKey
+                    })
+                });
 
-        document.getElementById('public-key').textContent = publicKey;
-        document.getElementById('private-key').textContent = privateKey;
-        document.getElementById('key-display').style.display = 'block';
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Error al enviar los datos al servidor');
+                }
 
-        // Guardar localmente si deseas
-        localStorage.setItem('publicKey', publicKey);
-        localStorage.setItem('privateKey', privateKey);
+                const data = await response.json();
+                showAlert(data.message || 'Datos enviados con éxito', 'success');
+            } catch (error) {
+                console.error('Error al enviar los datos:', error);
+                showAlert('Hubo un error al enviar los datos. Por favor, inténtalo de nuevo.', 'danger');
+            }
+        }
 
-        // Enable download functionality
-        document.getElementById('download-public-key').addEventListener('click', function () {
-            downloadFile('public_key.txt', publicKey);
-        });
+        // Vincular el botón de enviar llaves
+        document.getElementById('send-keys-btn').addEventListener('click', sendKeyToDirectory);
 
-        document.getElementById('download-private-key').addEventListener('click', function () {
-            downloadFile('private_key.txt', privateKey);
-        });
+        // Función para descargar archivos
+        function downloadFile(filename, content) {
+            const element = document.createElement('a');
+            const file = new Blob([content], { type: 'text/plain' });
+            element.href = URL.createObjectURL(file);
+            element.download = filename;
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
 
-    } catch (error) {
-        alert('Hubo un error generando las llaves: ' + error.message);
-        console.error(error);
-    }
-});
+        // Función para mostrar alertas amigables
+        function showAlert(message, type) {
+            const modal = document.getElementById('alert-modal');
+            const title = document.getElementById('alert-title');
+            const alertMessage = document.getElementById('alert-message');
 
-// Function to create and download a file
-function downloadFile(filename, content) {
-    const element = document.createElement('a');
-    const file = new Blob([content], { type: 'text/plain' });
-    element.href = URL.createObjectURL(file);
-    element.download = filename;
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-}
+            if (type === 'success') {
+                title.textContent = 'Éxito';
+                title.style.color = 'var(--success-color)';
+            } else {
+                title.textContent = 'Error';
+                title.style.color = 'var(--danger-color)';
+            }
+
+            alertMessage.textContent = message;
+            modal.style.display = 'block';
+
+            document.querySelector('.close').onclick = () => modal.style.display = 'none';
+            window.onclick = event => {
+                if (event.target === modal) modal.style.display = 'none';
+            };
+        }
     </script>
+    <!-- Modal para alertas -->
+    <div id="alert-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="alert-title"></h2>
+            <p id="alert-message"></p>
+        </div>
+    </div>
 </body>
 </html>
