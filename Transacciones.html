@@ -307,8 +307,8 @@
                                 <textarea id="transaction-note" class="form-control" placeholder="Escribe una nota..."></textarea>
                             </div>
                             <div class="form-group">
-                                <label for="private-key">Clave Privada</label>
-                                <input type="password" id="private-key" class="form-control" placeholder="Introduce tu clave privada" required>
+                                <label for="private-key-file">Subir Clave Privada</label>
+                                <input type="file" id="private-key-file" class="form-control" accept=".txt" required>
                             </div>
                             <button type="submit" class="submit-btn">Enviar</button>
                         </form>
@@ -432,76 +432,117 @@
 </style>
 
 <script>
-    document.getElementById('transaction-form').addEventListener('submit', async function (e) {
-        e.preventDefault();
+   document.getElementById('transaction-form').addEventListener('submit', async function (e) {
+    e.preventDefault();
 
-        const remitente = localStorage.getItem('email');
-        const destinatario = document.getElementById('recipient-address').value.trim();
-        const monto = parseFloat(document.getElementById('transaction-amount').value);
-        const nota = document.getElementById('transaction-note').value.trim();
-        const modal = document.getElementById('transaction-modal');
-        const title = document.getElementById('transaction-title');
-        const message = document.getElementById('transaction-message');
+    const remitente = localStorage.getItem('email');
+    const destinatario = document.getElementById('recipient-address').value.trim();
+    const monto = parseFloat(document.getElementById('transaction-amount').value);
+    const nota = document.getElementById('transaction-note').value.trim();
+    const privateKeyFile = document.getElementById('private-key-file').files[0];
 
-        // Validación básica
-        if (!destinatario) {
-            title.textContent = "Error";
-            message.textContent = "Por favor, ingresa la dirección del destinatario.";
-            modal.style.display = 'block';
-            return;
-        }
-
-        if (!monto || isNaN(monto) || monto <= 0) {
-            title.textContent = "Monto inválido";
-            message.textContent = "Por favor, ingresa un monto válido mayor a 0.";
-            modal.style.display = 'block';
-            return;
-        }
-        if (!privateKey) {
-        title.textContent = "Clave Privada requerida";  
-        message.textContent = "Por favor, introduce tu clave privada.";
-        modal.style.display = 'block';
+    // Validación básica
+    if (!destinatario) {
+        showAlert('Por favor, ingresa la dirección del destinatario.', 'danger');
         return;
     }
 
-        // Validar saldo
-        const balanceActual = parseFloat(localStorage.getItem('balance') || '0');
-        if (monto > balanceActual) {
-            title.textContent = "Saldo insuficiente";
-            message.textContent = `Tu saldo actual es $${balanceActual.toFixed(2)}. No puedes enviar $${monto.toFixed(2)}.`;
-            modal.style.display = 'block';
-            return;
+    if (!monto || isNaN(monto) || monto <= 0) {
+        showAlert('Por favor, ingresa un monto válido mayor a 0.', 'danger');
+        return;
+    }
+
+    if (!privateKeyFile) {
+        showAlert('Por favor, sube tu clave privada.', 'danger');
+        return;
+    }
+
+    // Leer el archivo de clave privada
+    const privateKey = await readPrivateKeyFile(privateKeyFile);
+
+    if (!privateKey) {
+        showAlert('No se pudo leer la clave privada. Asegúrate de subir un archivo válido.', 'danger');
+        return;
+    }
+
+    // Validar saldo
+    const balanceActual = parseFloat(localStorage.getItem('balance') || '0');
+    if (monto > balanceActual) {
+        showAlert(`Tu saldo actual es $${balanceActual.toFixed(2)}. No puedes enviar $${monto.toFixed(2)}.`, 'danger');
+        return;
+    }
+
+    // Enviar transacción
+    const datos = { remitente, destinatario, monto, nota, privateKey };
+
+    try {
+        const response = await fetch('https://cabo9yx4ac.execute-api.us-east-1.amazonaws.com/dev/Transaction', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(datos)
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(result.error || 'Error al enviar la transacción.');
         }
 
-        // Enviar transacción
-        const datos = { remitente, destinatario, monto, nota };
+        // Éxito
+        showAlert(`Transacción enviada a ${destinatario} por $${monto.toFixed(2)}. Nota: ${nota || 'Sin nota'}`, 'success');
 
-        try {
-            const response = await fetch('https://cabo9yx4ac.execute-api.us-east-1.amazonaws.com/dev/Transaction', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(datos)
-            });
+        // Actualizar balance local
+        const nuevoBalance = balanceActual - monto;
+        localStorage.setItem('balance', nuevoBalance);
 
-            const result = await response.json();
+        // Limpiar formulario
+        document.getElementById('transaction-form').reset();
+    } catch (error) {
+        console.error('Error al enviar la transacción:', error);
+        showAlert('Hubo un error al enviar la transacción. Intenta más tarde.', 'danger');
+    }
+});
 
-            // Éxito
-            title.textContent = "Transacción Enviada";
-            message.textContent = `Enviada a ${destinatario} por $${monto.toFixed(2)}. Nota: ${nota || "Sin nota"}`;
-            modal.style.display = 'block';
-
-            // Actualizar balance local
-            const nuevoBalance = balanceActual - monto;
-            localStorage.setItem('balance', nuevoBalance);
-
-            // Limpiar formulario
-            document.getElementById('transaction-form').reset();
-        } catch (error) {
-            title.textContent = "Error de conexión";
-            message.textContent = "Hubo un error al enviar la transacción. Intenta más tarde.";
-            modal.style.display = 'block';
-        }
+// Función para leer el archivo de clave privada
+function readPrivateKeyFile(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = function (event) {
+            resolve(event.target.result.trim());
+        };
+        reader.onerror = function () {
+            reject(new Error('Error al leer el archivo.'));
+        };
+        reader.readAsText(file);
     });
+}
+// Función para mostrar alertas
+function showAlert(message, type) {
+    const modal = document.getElementById('transaction-modal');
+    const title = document.getElementById('transaction-title');
+    const alertMessage = document.getElementById('transaction-message');
+
+    if (type === 'success') {
+        title.textContent = 'Éxito';
+        title.style.color = 'var(--success-color)';
+    } else {
+        title.textContent = 'Error';
+        title.style.color = 'var(--danger-color)';
+    }
+
+    alertMessage.textContent = message;
+    modal.style.display = 'block';
+
+    document.querySelector('.close').onclick = function () {
+        modal.style.display = 'none';
+    };
+
+    window.onclick = function (event) {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    };
+}
 
     // Control del modal (cerrar)
     document.querySelector('.close').onclick = function () {
