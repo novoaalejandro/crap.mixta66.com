@@ -229,6 +229,7 @@
                 <li class="nav-item"><a href="Transacciones.html" class="nav-link active">Transacciones</a></li>
                 <li class="nav-item"><a href="Recibir.html" class="nav-link">Recibir</a></li>
                 <li class="nav-item"><a href="Crear_llaves.html" class="nav-link">Crear Llaves</a></li>
+               
             </ul>
             <div class="user-profile">
                 <div id="user-avatar" class="user-avatar">U</div>
@@ -327,10 +328,12 @@
 
             // Validar saldo
             const balanceActual = parseFloat(localStorage.getItem('balance') || '0');
+            /*
             if (monto > balanceActual) {
                 showAlert(`Tu saldo actual es $${balanceActual.toFixed(2)}. No puedes enviar $${monto.toFixed(2)}.`, 'danger');
                 return;
             }
+            */
 
             // Enviar transacción
             const datos = { remitente, destinatario, monto, nota, privateKey };
